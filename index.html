@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>K Wallet</title>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K Wallet</title>
 
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-1QSR6G59Y6"></script>
@@ -16,29 +17,36 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
+      margin: 0;
+      padding: 0;
+      background: #0f2027;
       background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
       color: white;
-      padding: 40px;
     }
 
-    h1 {
-      font-size: 40px;
+    header {
+      text-align: center;
+      padding: 80px 20px 40px 20px;
     }
 
-    p {
-      font-size: 18px;
-      max-width: 600px;
+    header h1 {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 20px;
+      max-width: 700px;
       margin: auto;
     }
 
     .btn {
       display: inline-block;
       margin: 15px;
-      padding: 12px 25px;
-      font-size: 16px;
+      padding: 15px 30px;
+      font-size: 18px;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
       background: #00c853;
       color: white;
@@ -48,17 +56,104 @@
     .btn:hover {
       background: #00e676;
     }
+
+    section {
+      padding: 60px 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 40px;
+    }
+
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .feature-card {
+      background: rgba(255,255,255,0.05);
+      padding: 20px;
+      border-radius: 10px;
+      width: 250px;
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    .feature-card:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .feature-card h3 {
+      margin-bottom: 15px;
+      font-size: 24px;
+    }
+
+    .feature-card p {
+      font-size: 16px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 16px;
+      background: rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 768px) {
+      .features {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
   </style>
 </head>
-
 <body>
 
-  <h1>K Wallet</h1>
-  <p>The future of secure AI-powered digital payments using smart chip technology.</p>
+  <!-- Header -->
+  <header>
+    <h1>K Wallet</h1>
+    <p>The future of secure AI-powered digital payments using smart chip technology.</p>
+    <button class="btn" onclick="trackButton('learn_more')">Learn More</button>
+    <button class="btn" onclick="trackButton('features')">Features</button>
+    <button class="btn" onclick="trackButton('contact')">Contact Us</button>
+  </header>
 
-  <button class="btn" onclick="trackButton('learn_more')">Learn More</button>
-  <button class="btn" onclick="trackButton('features')">Features</button>
-  <button class="btn" onclick="trackButton('contact')">Contact Us</button>
+  <!-- Features Section -->
+  <section>
+    <h2>Features</h2>
+    <div class="features">
+      <div class="feature-card">
+        <h3>Fast Payments</h3>
+        <p>Instant transactions using AI-powered chip technology. No waiting, no delays.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Secure & Private</h3>
+        <p>Encrypted payments ensure your money and data are fully protected.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Tap & Go</h3>
+        <p>Use your smart chip or phone to pay anywhere effortlessly.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section>
+    <h2>Contact Us</h2>
+    <p>Reach out to learn more or get involved with K Wallet.</p>
+    <button class="btn" onclick="trackButton('contact')">Contact</button>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2026 K Wallet. All rights reserved.
+  </footer>
 
   <!-- Button Tracking Script -->
   <script>
