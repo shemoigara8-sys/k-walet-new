@@ -143,6 +143,45 @@
     form.reset(); // clears the form
   });
 </script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "PASTE YOURS",
+  authDomain: "PASTE YOURS",
+  projectId: "PASTE YOURS",
+  storageBucket: "PASTE YOURS",
+  messagingSenderId: "PASTE YOURS",
+  appId: "PASTE YOURS"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.querySelector("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("fullname").value;
+  const email = document.getElementById("email").value;
+
+  try {
+    await addDoc(collection(db, "users"), {
+      name: name,
+      email: email,
+      balance: 0,
+      createdAt: new Date()
+    });
+
+    alert("Registration successful!");
+    e.target.reset();
+  } catch (error) {
+    alert("Error: " + error.message);
+  }
+});
+</script>
+
 </body>
 </html>
+
 
