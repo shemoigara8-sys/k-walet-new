@@ -1,126 +1,249 @@
 
-</body>
-<!-- Navigation Menu -->
-<nav style="background: rgba(0,0,0,0.3); position: fixed; top:0; width:100%; z-index:1000; padding:10px 0; text-align:center;">
-  <a href="index.html" class="nav-btn" onclick="trackButton('nav_home')" style="margin:0 15px; color:white; text-decoration:none; font-weight:bold;">Home</a>
-  <a href="features.html" class="nav-btn" onclick="trackButton('nav_features')" style="margin:0 15px; color:white; text-decoration:none; font-weight:bold;">Features</a>
-  <a href="contact.html" class="nav-btn" onclick="trackButton('nav_contact')" style="margin:0 15px; color:white; text-decoration:none; font-weight:bold;">Contact</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1QSR6G59Y6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-1QSR6G59Y6');
+</script>
+<meta name="google-site-verification" content="GUvQqTRnhYqFyB98XFugx9sShFdGBezW9ZwpSe7KbnE" />
+  <meta charset="UTF-8">
+<title>K Wallet | Digital Money for Kenya</title>
+
+<meta name="description" content="K Wallet is a modern digital wallet for Kenya using smart technology for fast, secure, and cashless payments.">
+
+<meta name="keywords" content="K Wallet, digital wallet Kenya, cashless payments Kenya, fintech Kenya, mobile wallet">
+
+<meta name="author" content="K Wallet">
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K Wallet – Digital Money for Kenya</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: Arial, sans-serif; background:#f5f5f5; color:#222; }
+
+    /* NAVIGATION BAR */
+    nav {
+      background: #0a7c3a;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav h1 { color:white; font-size:24px; }
+    nav ul { list-style:none; display:flex; gap:20px; }
+    nav ul li a { color:white; text-decoration:none; font-weight:bold; transition:0.3s; }
+    nav ul li a:hover { color:#ffd700; }
+
+    /* HEADER */
+    header {
+      text-align:center;
+      padding:80px 20px;
+      background: linear-gradient(120deg, #0a7c3a, #0c5f2a);
+      color:white;
+    }
+    header h2 { font-size:40px; margin-bottom:20px; }
+    header p { font-size:20px; margin-bottom:30px; }
+
+    /* WALLET CARD */
+    .wallet-card {
+      background:white; max-width:300px; margin:20px auto; padding:20px;
+      border-radius:12px; box-shadow:0 6px 15px rgba(0,0,0,0.15); text-align:center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .wallet-card:hover { transform: translateY(-5px); box-shadow:0 10px 25px rgba(0,0,0,0.2); }
+    .wallet-card img { margin-bottom:10px; }
+    .wallet-card h3 { color:#0a7c3a; margin-bottom:5px; }
+    .wallet-card p { font-size:16px; margin-bottom:10px; }
+
+    /* BUTTONS */
+    .btn {
+      background:black; color:white; padding:12px 25px; border-radius:6px;
+      text-decoration:none; font-weight:bold; transition: transform 0.3s, background 0.3s; margin:5px; display:inline-block;
+    }
+    .btn:hover { transform: scale(1.05); background:#333; }
+
+    /* FEATURES SECTION */
+    .features {
+      max-width:1000px; margin:40px auto; display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:20px; padding:0 20px;
+    }
+    .feature {
+      background:white; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1);
+      padding:20px; text-align:center; transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .feature:hover { transform: translateY(-8px); box-shadow:0 8px 20px rgba(0,0,0,0.2); }
+    .feature-icon { font-size:40px; margin-bottom:10px; color:#0a7c3a; }
+    .feature h3 { margin-bottom:5px; color:#0a7c3a; }
+    .feature p { font-size:15px; }
+
+    /* FOOTER */
+    footer {
+      background:#111; color:white; text-align:center; padding:30px 20px; margin-top:40px;
+    }
+    footer a { color:white; margin:0 10px; font-size:20px; text-decoration:none; transition:0.3s; }
+    footer a:hover { color:#ffd700; }
+    footer .footer-links { font-size:14px; margin-top:10px; }
+    footer .footer-links a { font-size:14px; margin:0 5px; }
+  </style>
+</head>
+<body>
+
+<!-- NAVIGATION BAR -->
+<nav>
+  
+  <h1>K Wallet</h1>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="features.html">Features</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="register.html">Register</a></li>
+  </ul>
 </nav>
 
-<!-- Spacer so content isn't hidden under fixed nav -->
-<div style="height:60px;"></div>
+<!-- HEADER -->
+<header>
+  <h2>Welcome to K Wallet</h2>
+  <p>Digital Money for Kenya 🇰🇪 – Fast, Secure, Cashless</p>
+
+  <!-- Demo wallet card -->
+  <div class="wallet-card">
+    <img src="https://img.icons8.com/fluency/48/wallet.png" alt="Wallet Icon">
+    <h3>Shem’s Wallet</h3>
+    <p>Balance: Ksh 5,000</p>
+    <a href="features.html" class="btn">Top Up</a>
+  </div>
+
+  <!-- Main buttons -->
+  <a href="features.html" class="btn">View Features</a>
+  <a href="contact.html" class="btn">Contact Us</a>
+</header>
+
+<!-- FEATURES HIGHLIGHT -->
+<section class="features">
+  <div class="feature">
+    <div class="feature-icon">💸</div>
+    <h3>Send Money</h3>
+    <p>Instant transfers to any K Wallet user.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">📱</div>
+    <h3>Mobile Payments</h3>
+    <p>Pay with your phone anytime, anywhere.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">🔒</div>
+    <h3>Secure Wallet</h3>
+    <p>Your money is protected with modern security features.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">📊</div>
+    <h3>Balance Tracking</h3>
+    <p>Monitor spending and balance in real time.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 K Wallet | Built in Kenya</p>
+  <div>
+    <a href="#">🐦</a>
+    <a href="#">📘</a>
+    <a href="#">📸</a>
+  </div>
+  <div class="footer-links">
+    <a href="index.html">Home</a> |
+    <a href="features.html">Features</a> |
+    <a href="contact.html">Contact</a>
+  </div>
+</footer>
+
+</body>
+</html>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>K Wallet</title>
+  <title>K Wallet | Kenya's Fastest Digital Wallet</title>
+  
+  <!-- SEO Description -->
+  <meta name="description" content="K Wallet: The fastest and safest digital wallet in Kenya. Send, receive, and manage money instantly.">
+  <meta name="keywords" content="K Wallet, digital wallet Kenya, online payments, cashless Kenya, fintech Kenya, mobile payments">
 
   <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1QSR6G59Y6"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YOUR-MEASUREMENT-ID"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-1QSR6G59Y6');
+    gtag('config', 'G-YOUR-MEASUREMENT-ID');
   </script>
 
+  <!-- Google Site Verification -->
+  <meta name="google-site-verification" content="XXXXXXXXXXXXXXXXXXXX" />
+
+  <!-- Simple CSS for modern look -->
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: #0f2027;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: white;
+      background: #f4f6f8;
+      color: #111;
     }
-
     header {
+      background: #008000; /* K Wallet green */
+      color: #fff;
+      padding: 2rem;
       text-align: center;
-      padding: 80px 20px 40px 20px;
     }
-
     header h1 {
-      font-size: 48px;
-      margin-bottom: 10px;
+      margin: 0;
+      font-size: 2.2rem;
     }
-
     header p {
-      font-size: 20px;
-      max-width: 700px;
-      margin: auto;
+      font-size: 1.1rem;
     }
-
-    .btn {
+    .cta {
+      margin-top: 1rem;
       display: inline-block;
-      margin: 15px;
-      padding: 15px 30px;
-      font-size: 18px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      background: #00c853;
-      color: white;
-      transition: 0.3s;
+      background: #fff;
+      color: #008000;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
     }
-
-    .btn:hover {
-      background: #00e676;
-    }
-
-    section {
-      padding: 60px 20px;
-      max-width: 1000px;
-      margin: auto;
-    }
-
-    h2 {
-      text-align: center;
-      font-size: 36px;
-      margin-bottom: 40px;
-    }
-
     .features {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 30px;
+      padding: 2rem;
+      gap: 1.5rem;
     }
-
     .feature-card {
-      background: rgba(255,255,255,0.05);
-      padding: 20px;
+      background: #fff;
+      padding: 1.5rem;
       border-radius: 10px;
       width: 250px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       text-align: center;
-      transition: 0.3s;
     }
-
-    .feature-card:hover {
-      background: rgba(255,255,255,0.15);
-    }
-
     .feature-card h3 {
-      margin-bottom: 15px;
-      font-size: 24px;
+      margin-top: 0;
+      color: #008000;
     }
-
-    .feature-card p {
-      font-size: 16px;
-    }
-
     footer {
       text-align: center;
-      padding: 40px 20px;
-      font-size: 16px;
-      background: rgba(0,0,0,0.2);
-    }
-
-    @media (max-width: 768px) {
-      .features {
-        flex-direction: column;
-        align-items: center;
-      }
+      padding: 1rem;
+      background: #111;
+      color: #fff;
     }
   </style>
 </head>
@@ -129,36 +252,24 @@
   <!-- Header -->
   <header>
     <h1>K Wallet</h1>
-    <p>The future of secure AI-powered digital payments using smart chip technology.</p>
-    <button class="btn" onclick="trackButton('learn_more')">Learn More</button>
-    <button class="btn" onclick="trackButton('features')">Features</button>
-    <button class="btn" onclick="trackButton('contact')">Contact Us</button>
+    <p>Kenya's fastest and safest digital wallet. Manage money instantly.</p>
+    <a href="#features" class="cta">Explore Features</a>
   </header>
 
   <!-- Features Section -->
-  <section>
-    <h2>Features</h2>
-    <div class="features">
-      <div class="feature-card">
-        <h3>Fast Payments</h3>
-        <p>Instant transactions using AI-powered chip technology. No waiting, no delays.</p>
-      </div>
-      <div class="feature-card">
-        <h3>Secure & Private</h3>
-        <p>Encrypted payments ensure your money and data are fully protected.</p>
-      </div>
-      <div class="feature-card">
-        <h3>Tap & Go</h3>
-        <p>Use your smart chip or phone to pay anywhere effortlessly.</p>
-      </div>
+  <section id="features" class="features">
+    <div class="feature-card">
+      <h3>Send Money</h3>
+      <p>Instantly send cash to anyone in Kenya with just a few taps.</p>
     </div>
-  </section>
-
-  <!-- Contact Section -->
-  <section>
-    <h2>Contact Us</h2>
-    <p>Reach out to learn more or get involved with K Wallet.</p>
-    <button class="btn" onclick="trackButton('contact')">Contact</button>
+    <div class="feature-card">
+      <h3>Receive Money</h3>
+      <p>Get paid instantly with no bank delays.</p>
+    </div>
+    <div class="feature-card">
+      <h3>Secure Payments</h3>
+      <p>All transactions are protected with top-notch security.</p>
+    </div>
   </section>
 
   <!-- Footer -->
@@ -166,15 +277,5 @@
     &copy; 2026 K Wallet. All rights reserved.
   </footer>
 
-  <!-- Button Tracking Script -->
-  <script>
-    function trackButton(name) {
-      gtag('event', 'button_click', {
-        'button_name': name
-      });
-    }
-  </script>
-
 </body>
 </html>
-
