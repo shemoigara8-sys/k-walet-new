@@ -180,8 +180,48 @@ document.querySelector("form").addEventListener("submit", async (e) => {
   }
 });
 </script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "PASTE-YOURS",
+    authDomain: "PASTE-YOURS",
+    projectId: "PASTE-YOURS",
+    storageBucket: "PASTE-YOURS",
+    messagingSenderId: "PASTE-YOURS",
+    appId: "PASTE-YOURS"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const form = document.getElementById("registerForm");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+
+    try {
+      await addDoc(collection(db, "users"), {
+        name: name,
+        email: email,
+        balance: 0
+      });
+
+      alert("Account created successfully 🎉");
+      form.reset();
+
+    } catch (error) {
+      console.error("Error adding user: ", error);
+    }
+  });
+</script>
 
 </body>
 </html>
+
 
 
