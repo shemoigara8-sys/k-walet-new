@@ -119,30 +119,6 @@
     <a href="register.html">Register</a>
   </div>
 </footer>
-<script>
-  const form = document.querySelector('form');
-
-  form.addEventListener('submit', function(e) {
-    e.preventDefault(); // prevent actual page reload
-
-    const name = form.querySelector('input[type="text"]').value;
-    const email = form.querySelector('input[type="email"]').value;
-
-    // Simple validation: passwords match
-    const password = form.querySelectorAll('input[type="password"]')[0].value;
-    const confirmPassword = form.querySelectorAll('input[type="password"]')[1].value;
-
-    if(password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
-
-    // Simulated registration success
-    alert(`Welcome, ${name}! Your K Wallet account has been created.\nWe sent a confirmation to: ${email}`);
-    
-    form.reset(); // clears the form
-  });
-
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -196,6 +172,7 @@ form.addEventListener("submit", async (e) => {
 
 </body>
 </html>
+
 
 
 
