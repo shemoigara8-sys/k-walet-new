@@ -1,128 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K Wallet – Dashboard</title>
-<style>
-  * { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
-  body { background:#f5f5f5; color:#222; padding-bottom:50px; }
-
-  nav { background:#0a7c3a; padding:15px 30px; display:flex; justify-content:space-between; color:white; }
-  nav h1 { font-size:24px; }
-  nav ul { list-style:none; display:flex; gap:20px; }
-  nav ul li a { color:white; text-decoration:none; font-weight:bold; }
-  nav ul li a:hover { color:#ffd700; }
-
-  .container { max-width:600px; margin:40px auto; background:white; padding:30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
-  h2 { text-align:center; color:#0a7c3a; margin-bottom:20px; }
-
-  input { width:100%; padding:12px; margin:10px 0; border:1px solid #ccc; border-radius:6px; }
-  button { width:100%; padding:12px; border:none; border-radius:6px; background:black; color:white; cursor:pointer; font-weight:bold; margin:5px 0; }
-  button:hover { background:#333; }
-
-  .balance { font-size:22px; text-align:center; margin-bottom:20px; color:#0a7c3a; }
-</style>
+  <title>K Wallet Dashboard</title>
 </head>
 <body>
+  <h2>K Wallet Dashboard</h2>
 
-<nav>
-  <h1>K Wallet</h1>
-  <ul>
-    <li><a href="index.html">Home</a></li>
-    <li><a href="dashboard.html">Dashboard</a></li>
-    <li><a href="register.html">Logout</a></li>
-  </ul>
-</nav>
-
-<div class="container">
-  <h2>Welcome, <span id="userName">User</span></h2>
-  <p class="balance">Balance: KSh <span id="userBalance">0</span></p>
+  <p><b>User:</b> <span id="userEmail"></span></p>
+  <p><b>Balance:</b> KSh <span id="balance">0</span></p>
 
   <h3>Add Money</h3>
-  <input type="number" id="depositAmount" placeholder="Enter amount to add">
-  <button id="addMoneyBtn">Add Money</button>
+  <input type="number" id="addAmount" placeholder="Amount">
+  <button id="addBtn">Add</button>
 
   <h3>Send Money</h3>
-  <input type="email" id="receiverEmail" placeholder="Receiver Email">
-  <input type="number" id="transferAmount" placeholder="Amount to send">
-  <button id="sendMoneyBtn">Send Money</button>
-</div>
+  <input type="email" id="receiverEmail" placeholder="Receiver Email"><br><br>
+  <input type="number" id="sendAmount" placeholder="Amount">
+  <button id="sendBtn">Send</button>
+
+  <br><br>
+  <button id="logoutBtn">Logout</button>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, doc, getDocs, query, where, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// ===== FIREBASE CONFIG =====
 const firebaseConfig = {
-  apiKey: "AIzaSyAN10LcAxOI4UAAmT8529U6WxVMmpfDyy4",
+  apiKey: "YOUR_API_KEY",
   authDomain: "k-wallet-8f896.firebaseapp.com",
   projectId: "k-wallet-8f896",
-  storageBucket: "k-wallet-8f896.firebasestorage.app",
-  messagingSenderId: "986041224284",
-  appId: "1:986041224284:web:2063eda1ba7cc56675aa99"
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ===== SIMULATED LOGGED-IN USER =====
-const userEmail = "testuser@example.com"; // replace with actual email if you have login
+let currentUserUID = null;
 
-let currentUser;
-
-// ===== GET USER INFO =====
-async function getUser() {
-  const usersRef = collection(db, "users");
-  const q = query(usersRef, where("email", "==", userEmail));
-  const querySnap = await getDocs(q);
-  if (!querySnap.empty) {
-    const userDoc = querySnap.docs[0];
-    currentUser = { id: userDoc.id, ...userDoc.data() };
-    document.getElementById("userName").innerText = currentUser.name;
-    document.getElementById("userBalance").innerText = currentUser.balance;
+// 🔐 Check login state
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUserUID = user.uid;
+    document.getElementById("userEmail").innerText = user.email;
+    loadBalance();
   } else {
-    alert("User not found! Check email in code.");
+    window.location.href = "login.html";
   }
-}
-await getUser();
-
-// ===== ADD MONEY =====
-document.getElementById("addMoneyBtn").addEventListener("click", async () => {
-  const amount = parseFloat(document.getElementById("depositAmount").value);
-  if (!amount || amount <= 0) return alert("Enter valid amount");
-
-  const userRef = doc(db, "users", currentUser.id);
-  const newBalance = currentUser.balance + amount;
-  await updateDoc(userRef, { balance: newBalance });
-  currentUser.balance = newBalance;
-  document.getElementById("userBalance").innerText = newBalance;
-  alert(`Added KSh ${amount}. New balance: KSh ${newBalance}`);
 });
 
-// ===== SEND MONEY =====
-document.getElementById("sendMoneyBtn").addEventListener("click", async () => {
+// 💰 Load Balance
+async function loadBalance() {
+  const docRef = doc(db, "users", currentUserUID);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    document.getElementById("balance").innerText = docSnap.data().balance;
+  }
+}
+
+// ➕ Add Money
+document.getElementById("addBtn").addEventListener("click", async () => {
+  const amount = Number(document.getElementById("addAmount").value);
+  const ref = doc(db, "users", currentUserUID);
+  const snap = await getDoc(ref);
+  let balance = snap.data().balance;
+
+  await updateDoc(ref, { balance: balance + amount });
+  loadBalance();
+});
+
+// 💸 Send Money
+document.getElementById("sendBtn").addEventListener("click", async () => {
   const receiverEmail = document.getElementById("receiverEmail").value;
-  const amount = parseFloat(document.getElementById("transferAmount").value);
+  const amount = Number(document.getElementById("sendAmount").value);
 
-  if (!receiverEmail || !amount || amount <= 0) return alert("Enter valid data");
-  if (amount > currentUser.balance) return alert("Not enough balance");
+  const senderRef = doc(db, "users", currentUserUID);
+  const senderSnap = await getDoc(senderRef);
+  let senderBalance = senderSnap.data().balance;
 
-  // Find receiver
-  const usersRef = collection(db, "users");
-  const q = query(usersRef, where("email", "==", receiverEmail));
+  if (senderBalance < amount) {
+    alert("Not enough balance");
+    return;
+  }
+
+  const q = query(collection(db, "users"), where("email", "==", receiverEmail));
   const querySnap = await getDocs(q);
-  if (querySnap.empty) return alert("Receiver not found");
+
+  if (querySnap.empty) {
+    alert("Receiver not found");
+    return;
+  }
 
   const receiverDoc = querySnap.docs[0];
+  const receiverRef = doc(db, "users", receiverDoc.id);
+  let receiverBalance = receiverDoc.data().balance;
 
-  // Update sender & receiver
-  await updateDoc(doc(db, "users", currentUser.id), { balance: currentUser.balance - amount });
-  await updateDoc(doc(db, "users", receiverDoc.id), { balance: receiverDoc.data().balance + amount });
+  await updateDoc(senderRef, { balance: senderBalance - amount });
+  await updateDoc(receiverRef, { balance: receiverBalance + amount });
 
-  currentUser.balance -= amount;
-  document.getElementById("userBalance").innerText = currentUser.balance;
-  alert(`Sent KSh ${amount} to ${receiverDoc.data().name}`);
+  alert("Money Sent!");
+  loadBalance();
+});
+
+// 🚪 Logout
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  signOut(auth);
 });
 </script>
 
