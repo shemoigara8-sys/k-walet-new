@@ -39,13 +39,16 @@ const db = getFirestore(app);
 let currentUserUID = null;
 
 // 🔐 Check login state
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const auth = getAuth();
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // user is logged in — stay on dashboard
     console.log("User logged in:", user.email);
+    // Load user data here
   } else {
-    // user not logged in — send to login
-    
+    window.location.replace("login.html");
   }
 });
 
