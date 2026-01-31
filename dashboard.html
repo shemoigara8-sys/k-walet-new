@@ -27,7 +27,7 @@ import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/fi
 import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyAN10LcAxOI4UAAmT8529U6WxVMmpfDyy4",
   authDomain: "k-wallet-8f896.firebaseapp.com",
   projectId: "k-wallet-8f896",
 };
@@ -39,12 +39,12 @@ const db = getFirestore(app);
 let currentUserUID = null;
 
 // 🔐 Check login state
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, (user) => {
   if (user) {
-    currentUserUID = user.uid;
-    document.getElementById("userEmail").innerText = user.email;
-    loadBalance();
+    // user is logged in — stay on dashboard
+    console.log("User logged in:", user.email);
   } else {
+    // user not logged in — send to login
     window.location.href = "login.html";
   }
 });
