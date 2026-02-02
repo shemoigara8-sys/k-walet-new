@@ -12,7 +12,7 @@
       font-family: Arial, sans-serif;
       background: #f4f6f8;
       color: #111;
-      display: none; /* 🔒 hide until auth confirmed */
+      /* 🔒 hide until auth confirmed */
     }
 
     /* TOP BAR */
@@ -108,6 +108,20 @@
 </head>
 
 <body>
+<div id="loader" style="
+  position: fixed;
+  inset: 0;
+  background: #f4f6f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+">
+  Loading dashboard...
+</div>
+
+<div id="app" style="display:none;">
 
 <div class="topbar">
   <h2>K Wallet</h2>
@@ -143,16 +157,86 @@
     © 2026 K Wallet • Secure Digital Payments 🇰🇪
   </footer>
 </div>
-
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  const app = initializeApp({
-    apiKey: "AIzaSyAN10LcAxOI4UAAmT8529U6WxVMmpfDyy4",
-    authDomain: "k-wallet-8f896.firebaseapp.com",
-    projectId: "k-wallet-8f896",
+const firebaseConfig = {
+  apiKey: "AIzaSyAN10LcAxOI4UAAmT8529U6WxVMmpfDyy4",
+  authDomain: "k-wallet-8f896.firebaseapp.com",
+  projectId: "k-wallet-8f896",
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUserUID = null;
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  currentUserUID = user.uid;
+  document.getElementById("userEmail").innerText = user.email;
+
+  document.getElementById("loader").style.display = "none";
+  document.getElementById("app").style.display = "block";
+
+  await loadBalance();
+});
+
+async function loadBalance() {
+  const ref = doc(db, "users", currentUserUID);
+  const snap = await getDoc(ref);
+  if (snap.exists()) {
+    document.getElementById("balance").innerText = snap.data().balance;
+  }
+}
+
+document.getElementById("addBtn").addEventListener("click", async () => {
+  const amount = Number(addAmount.value);
+  if (amount <= 0) return alert("Enter a valid amount");
+
+  const ref = doc(db, "users", currentUserUID);
+  const snap = await getDoc(ref);
+  await updateDoc(ref, { balance: snap.data().balance + amount });
+  loadBalance();
+});
+
+document.getElementById("sendBtn").addEventListener("click", async () => {
+  const amount = Number(sendAmount.value);
+  if (amount <= 0) return alert("Invalid amount");
+
+  const senderRef = doc(db, "users", currentUserUID);
+  const senderSnap = await getDoc(senderRef);
+
+  if (senderSnap.data().balance < amount) {
+    return alert("Insufficient balance");
+  }
+
+  const q = query(collection(db, "users"), where("email", "==", receiverEmail.value));
+  const qs = await getDocs(q);
+  if (qs.empty) return alert("Receiver not found");
+
+  const receiverDoc = qs.docs[0];
+
+  await updateDoc(senderRef, { balance: senderSnap.data().balance - amount });
+  await updateDoc(doc(db, "users", receiverDoc.id), {
+    balance: receiverDoc.data().balance + amount
   });
 
-  const auth
+  alert("Money sent successfully");
+  loadBalance();
+});
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  signOut(auth).then(() => {
+    window.location.href = "login.html";
+  });
+});
+</script>
+
