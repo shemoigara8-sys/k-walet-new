@@ -1,77 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>K Wallet Login</title>
+  <meta charset="UTF-8">
+  <title>K Wallet | Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(120deg, #0a7c3a, #0c5f2a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-card {
+      background: white;
+      width: 100%;
+      max-width: 380px;
+      padding: 35px;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      text-align: center;
+    }
+
+    .login-card h1 {
+      margin-bottom: 5px;
+      color: #0a7c3a;
+    }
+
+    .login-card p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 18px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #0a7c3a;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #0a7c3a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #086631;
+    }
+
+    .extra {
+      margin-top: 18px;
+      font-size: 13px;
+    }
+
+    .extra a {
+      color: #0a7c3a;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .extra a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
+
 <body>
 
-  <h2>K Wallet Login</h2>
+  <div class="login-card">
+    <h1>K Wallet</h1>
+    <p>Secure login to your wallet</p>
 
-  <input type="email" id="email" placeholder="Email"><br><br>
-  <input type="password" id="password" placeholder="Password"><br><br>
+    <label>Email Address</label>
+    <input type="email" id="email" placeholder="you@example.com">
 
-  <button id="loginBtn">Login</button>
-  <button id="registerBtn">Register</button>
+    <label>Password</label>
+    <input type="password" id="password" placeholder="••••••••">
 
-  <p id="msg"></p>
+    <button onclick="login()">Login</button>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { 
-    getAuth, 
-    signInWithEmailAndPassword, 
-    createUserWithEmailAndPassword 
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { 
-    getFirestore, 
-    doc, 
-    setDoc 
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    <div class="extra">
+      <p>Don’t have an account? <a href="signup.html">Sign up</a></p>
+    </div>
+  </div>
 
-  // 🔥 Firebase config (SAME as dashboard)
-  const firebaseConfig = {
-    apiKey: "AIzaSyAN10LcAxOI4UAAmT8529U6WxVMmpfDyy4",
-    authDomain: "k-wallet-8f896.firebaseapp.com",
-    projectId: "k-wallet-8f896",
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  // 🔑 LOGIN
-  document.getElementById("loginBtn").addEventListener("click", async () => {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      window.location.replace("dashboard.html");
-    } catch (error) {
-      document.getElementById("msg").innerText = error.message;
+  <script>
+    function login() {
+      // temporary redirect (replace with Firebase logic)
+      window.location.href = "dashboard.html";
     }
-  });
-
-  // 🆕 REGISTER
-  document.getElementById("registerBtn").addEventListener("click", async () => {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    try {
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-
-      // Create Firestore user doc
-      await setDoc(doc(db, "users", cred.user.uid), {
-        email: email,
-        balance: 0
-      });
-
-      window.location.replace("dashboard.html");
-    } catch (error) {
-      document.getElementById("msg").innerText = error.message;
-    }
-  });
-</script>
+  </script>
 
 </body>
 </html>
