@@ -1,46 +1,167 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>K Wallet Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #111;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      background: #0a7c3a;
+      color: white;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .topbar h2 {
+      font-size: 22px;
+    }
+    .logout {
+      background: #fff;
+      color: #0a7c3a;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* CONTAINER */
+    .container {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    /* USER CARD */
+    .user-card {
+      background: linear-gradient(135deg, #0a7c3a, #0c5f2a);
+      color: white;
+      padding: 25px;
+      border-radius: 16px;
+      margin-bottom: 25px;
+    }
+    .user-card p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    .balance {
+      font-size: 36px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    /* GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    /* ACTION CARDS */
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+    }
+    .card h3 {
+      margin-bottom: 15px;
+      color: #0a7c3a;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+
+    .btn {
+      width: 100%;
+      background: #0a7c3a;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #095f2e;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 13px;
+      color: #666;
+    }
+  </style>
 </head>
+
 <body>
 
-  <h2>K Wallet Dashboard</h2>
+<!-- TOP BAR -->
+<div class="topbar">
+  <h2>K Wallet</h2>
+  <button class="logout" id="logoutBtn">Logout</button>
+</div>
 
-  <p><b>User:</b> <span id="userEmail"></span></p>
-  <p><b>Balance:</b> KSh <span id="balance">0</span></p>
+<!-- CONTENT -->
+<div class="container">
 
-  <h3>Add Money</h3>
-  <input type="number" id="addAmount" placeholder="Amount">
-  <button id="addBtn">Add</button>
+  <!-- USER & BALANCE -->
+  <div class="user-card">
+    <p>Logged in as</p>
+    <strong id="userEmail"></strong>
+    <div class="balance">KSh <span id="balance">0</span></div>
+  </div>
 
-  <h3>Send Money</h3>
-  <input type="email" id="receiverEmail" placeholder="Receiver Email"><br><br>
-  <input type="number" id="sendAmount" placeholder="Amount">
-  <button id="sendBtn">Send</button>
+  <!-- ACTIONS -->
+  <div class="grid">
 
-  <br><br>
-  <button id="logoutBtn">Logout</button>
+    <!-- ADD MONEY -->
+    <div class="card">
+      <h3>➕ Add Money</h3>
+      <input type="number" id="addAmount" placeholder="Amount (KSh)">
+      <button class="btn" id="addBtn">Add Money</button>
+    </div>
 
+    <!-- SEND MONEY -->
+    <div class="card">
+      <h3>💸 Send Money</h3>
+      <input type="email" id="receiverEmail" placeholder="Receiver Email">
+      <input type="number" id="sendAmount" placeholder="Amount (KSh)">
+      <button class="btn" id="sendBtn">Send Money</button>
+    </div>
+
+  </div>
+
+  <footer>
+    © 2026 K Wallet • Secure Digital Payments 🇰🇪
+  </footer>
+</div>
+
+<!-- FIREBASE LOGIC -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { 
-    getAuth, 
-    onAuthStateChanged, 
-    signOut 
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { 
-    getFirestore, 
-    doc, 
-    getDoc, 
-    updateDoc, 
-    collection, 
-    query, 
-    where, 
-    getDocs 
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // 🔥 Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyAN10LcAxOI4UAAmT8529U6WxVMmpfDyy4",
     authDomain: "k-wallet-8f896.firebaseapp.com",
@@ -53,18 +174,16 @@
 
   let currentUserUID = null;
 
-  // 🔐 Check login
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       currentUserUID = user.uid;
       document.getElementById("userEmail").innerText = user.email;
-      await loadBalance();
+      loadBalance();
     } else {
       window.location.replace("login.html");
     }
   });
 
-  // 💰 Load balance
   async function loadBalance() {
     const ref = doc(db, "users", currentUserUID);
     const snap = await getDoc(ref);
@@ -73,64 +192,41 @@
     }
   }
 
-  // ➕ Add money
   document.getElementById("addBtn").addEventListener("click", async () => {
-    const amount = Number(document.getElementById("addAmount").value);
-    if (amount <= 0) {
-      alert("Enter a valid amount");
-      return;
-    }
+    const amount = Number(addAmount.value);
+    if (amount <= 0) return alert("Enter a valid amount");
 
     const ref = doc(db, "users", currentUserUID);
     const snap = await getDoc(ref);
-    const balance = snap.data().balance;
-
-    await updateDoc(ref, { balance: balance + amount });
+    await updateDoc(ref, { balance: snap.data().balance + amount });
     loadBalance();
   });
 
-  // 💸 Send money
   document.getElementById("sendBtn").addEventListener("click", async () => {
-    const receiverEmail = document.getElementById("receiverEmail").value;
-    const amount = Number(document.getElementById("sendAmount").value);
-
-    if (amount <= 0) {
-      alert("Enter a valid amount");
-      return;
-    }
+    const amount = Number(sendAmount.value);
+    if (amount <= 0) return alert("Invalid amount");
 
     const senderRef = doc(db, "users", currentUserUID);
     const senderSnap = await getDoc(senderRef);
-    const senderBalance = senderSnap.data().balance;
 
-    if (senderBalance < amount) {
-      alert("Not enough balance");
-      return;
+    if (senderSnap.data().balance < amount) {
+      return alert("Insufficient balance");
     }
 
-    const q = query(
-      collection(db, "users"),
-      where("email", "==", receiverEmail)
-    );
-    const querySnap = await getDocs(q);
+    const q = query(collection(db, "users"), where("email", "==", receiverEmail.value));
+    const qs = await getDocs(q);
+    if (qs.empty) return alert("Receiver not found");
 
-    if (querySnap.empty) {
-      alert("Receiver not found");
-      return;
-    }
+    const receiverDoc = qs.docs[0];
+    await updateDoc(senderRef, { balance: senderSnap.data().balance - amount });
+    await updateDoc(doc(db, "users", receiverDoc.id), {
+      balance: receiverDoc.data().balance + amount
+    });
 
-    const receiverDoc = querySnap.docs[0];
-    const receiverRef = doc(db, "users", receiverDoc.id);
-    const receiverBalance = receiverDoc.data().balance;
-
-    await updateDoc(senderRef, { balance: senderBalance - amount });
-    await updateDoc(receiverRef, { balance: receiverBalance + amount });
-
-    alert("Money Sent!");
+    alert("Money sent successfully");
     loadBalance();
   });
 
-  // 🚪 Logout
   document.getElementById("logoutBtn").addEventListener("click", () => {
     signOut(auth);
   });
