@@ -176,7 +176,19 @@
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import {
+  getFirestore,
+  doc,
+  getDoc,
+  updateDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 
   const firebaseConfig = {
     apiKey: "AIzaSyAN10LcAxOI4UAAmT8529U6WxVMmpfDyy4",
@@ -269,21 +281,35 @@ async function loadTransactions() {
     txList.appendChild(li);
   });
 }
+addBtn.addEventListener("click", async () => {
+  const amount = Number(addAmountInput.value);
+  if (amount <= 0) return alert("Enter a valid amount");
 
-  addBtn.addEventListener("click", async () => {
-    const amount = Number(addAmountInput.value);
-    if (amount <= 0) return alert("Enter a valid amount");
+  const ref = doc(db, "users", currentUID);
+  const snap = await getDoc(ref);
 
-    const ref = doc(db, "users", currentUID);
-    const snap = await getDoc(ref);
-
-    await updateDoc(ref, {
-      balance: (snap.data().balance || 0) + amount
-    });
-
-    addAmountInput.value = "";
-    loadBalance();
+  // 1️⃣ Update balance
+  await updateDoc(ref, {
+    balance: (snap.data().balance || 0) + amount
   });
+
+  // 2️⃣ Save transaction
+  await addDoc(collection(db, "transactions"), {
+    type: "receive",
+    amount: amount,
+    from: "self",
+    to: currentUID,
+    status: "success",
+    userId: currentUID,
+    createdAt: serverTimestamp()
+  });
+
+  addAmountInput.value = "";
+  loadBalance();
+  loadTransactions();
+});
+
+
 
   sendBtn.addEventListener("click", async () => {
     const amount = Number(sendAmountInput.value);
