@@ -101,7 +101,8 @@
   </style>
 </head>
 
-<body>
+<body style="display:none;">
+
 
   <div class="login-card">
     <h1>K Wallet</h1>
@@ -119,13 +120,53 @@
       <p>Don’t have an account?<a href="register.html">Sign Up</a></p>
     </div>
   </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  <script>
-    function login() {
-      // temporary redirect (replace with Firebase logic)
-      window.location.href = "dashboard.html";
+  const firebaseConfig = {
+    apiKey: "AIzaSyAN10LcAxOI4UAAmT8529U6WxVMmpfDyy4",
+    authDomain: "k-wallet-8f896.firebaseapp.com",
+    projectId: "k-wallet-8f896",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  await setPersistence(auth, browserLocalPersistence);
+
+  // 🔐 AUTH CHECK
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      window.location.replace("dashboard.html");
+    } else {
+      document.body.style.display = "block"; // ✅ SHOW login page
     }
-  </script>
+  });
 
-</body>
-</html>
+  // 🔘 LOGIN BUTTON
+  window.login = async function () {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    if (!email || !password) {
+      alert("Fill in all fields");
+      return;
+    }
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      window.location.replace("dashboard.html");
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+</script>
+
+  
