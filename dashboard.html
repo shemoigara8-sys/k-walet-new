@@ -156,9 +156,13 @@
         <input type="email" id="receiverEmail" placeholder="Receiver Email" />
         <input type="number" id="sendAmount" placeholder="Amount (KSh)" />
         <button class="btn" id="sendBtn">Send Money</button>
-      </div>
+    
 
-    </div>
+ <div class="card" style="margin-top:25px;">
+  <h3>📜 Transaction History</h3>
+  <ul id="txList" style="list-style:none; padding:0;"></ul>
+</div>
+
 
     <footer>
       © 2026 K Wallet • Secure Digital Payments 🇰🇪
@@ -220,6 +224,7 @@ onAuthStateChanged(auth, async (user) => {
   userEmail.textContent = user.email;
 
   loadBalance();
+  loadTransactions();
 });
 
   
@@ -230,6 +235,40 @@ onAuthStateChanged(auth, async (user) => {
       balanceEl.textContent = snap.data().balance || 0;
     }
   }
+async function loadTransactions() {
+  const txList = document.getElementById("txList");
+  txList.innerHTML = "<li>Loading...</li>";
+
+  const q = query(
+    collection(db, "transactions"),
+    where("userId", "==", currentUID),
+    orderBy("createdAt", "desc")
+  );
+
+  const snap = await getDocs(q);
+  txList.innerHTML = "";
+
+  if (snap.empty) {
+    txList.innerHTML = "<li>No transactions yet</li>";
+    return;
+  }
+
+  snap.forEach(doc => {
+    const tx = doc.data();
+    const sign = tx.type === "send" ? "−" : "+";
+
+    const li = document.createElement("li");
+    li.style.padding = "10px 0";
+    li.style.borderBottom = "1px solid #eee";
+
+    li.innerHTML = `
+      <strong>${sign} KSh ${tx.amount}</strong><br>
+      <small>${tx.type.toUpperCase()} • ${tx.status}</small>
+    `;
+
+    txList.appendChild(li);
+  });
+}
 
   addBtn.addEventListener("click", async () => {
     const amount = Number(addAmountInput.value);
