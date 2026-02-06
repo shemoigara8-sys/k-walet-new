@@ -1,407 +1,366 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="manifest" href="manifest.json">
+<meta charset="UTF-8">
+<title>K Wallet Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0a7c3a">
 
-  <meta charset="UTF-8" />
-  <title>K Wallet Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial;background:#f4f6f8;color:#111}
 
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+/* Loader */
+#loader{
+position:fixed;inset:0;
+display:flex;align-items:center;justify-content:center;
+font-weight:bold;background:#f4f6f8;
+}
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      color: #111;
-    }
+/* PIN LOCK */
+#pinLock{
+position:fixed;inset:0;
+background:#f4f6f8;
+display:flex;align-items:center;justify-content:center;
+flex-direction:column;z-index:999;
+}
 
-    /* LOADER */
-    #loader {
-      position: fixed;
-      inset: 0;
-      background: #f4f6f8;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      font-weight: bold;
-    }
+/* Topbar */
+.topbar{
+background:#0a7c3a;color:#fff;
+padding:15px 25px;
+display:flex;justify-content:space-between;
+}
 
-    /* TOP BAR */
-    .topbar {
-      background: #0a7c3a;
-      color: white;
-      padding: 15px 25px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+.logout{
+background:#fff;color:#0a7c3a;
+border:none;padding:8px 15px;
+border-radius:6px;font-weight:bold;cursor:pointer;
+}
 
-    .logout {
-      background: white;
-      color: #0a7c3a;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+.container{max-width:1000px;margin:30px auto;padding:0 20px}
 
-    .container {
-      max-width: 1000px;
-      margin: 30px auto;
-      padding: 0 20px;
-    }
+.user-card{
+background:linear-gradient(135deg,#0a7c3a,#0c5f2a);
+color:#fff;padding:25px;border-radius:16px;margin-bottom:25px;
+}
 
-    .user-card {
-      background: linear-gradient(135deg, #0a7c3a, #0c5f2a);
-      color: white;
-      padding: 25px;
-      border-radius: 16px;
-      margin-bottom: 25px;
-    }
+.balance{font-size:36px;font-weight:bold;margin-top:10px}
 
-    .balance {
-      font-size: 36px;
-      font-weight: bold;
-      margin-top: 10px;
-    }
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:20px;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-    }
+.card{
+background:#fff;padding:20px;
+border-radius:14px;
+box-shadow:0 6px 15px rgba(0,0,0,.08);
+}
 
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 14px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-    }
+.card h3{margin-bottom:15px;color:#0a7c3a}
 
-    .card h3 {
-      margin-bottom: 15px;
-      color: #0a7c3a;
-    }
+input{
+width:100%;padding:12px;margin-bottom:12px;
+border-radius:8px;border:1px solid #ccc;
+}
 
-    input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 12px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 15px;
-    }
+.btn{
+width:100%;background:#0a7c3a;color:#fff;
+border:none;padding:12px;border-radius:8px;
+font-weight:bold;cursor:pointer;
+}
 
-    .btn {
-      width: 100%;
-      background: #0a7c3a;
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .btn:hover {
-      background: #095f2e;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      font-size: 13px;
-      color: #666;
-    }
-  </style>
+.tx-list li{
+padding:10px 0;
+border-bottom:1px solid #eee;
+}
+</style>
 </head>
 
 <body style="display:none;">
 
-
-<!-- LOADER -->
+<!-- Loader -->
 <div id="loader">Loading dashboard...</div>
 
-  <!-- PIN LOCK SCREEN -->
-<div id="pinLock" style="
-  position:fixed;
-  inset:0;
-  background:#f4f6f8;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  z-index:999;
-">
+<!-- PIN LOCK -->
+<div id="pinLock">
+<h2>K Wallet Security</h2>
 
-  <h2>K Wallet Security</h2>
+<input type="password"
+id="pinInput"
+placeholder="Enter 4-digit PIN"
+maxlength="4">
 
-  <input type="password"
-         id="pinInput"
-         placeholder="Enter 4-digit PIN"
-         maxlength="4"
-         style="padding:12px; font-size:18px; text-align:center; margin-top:15px;">
-
-  <button class="btn"
-          id="unlockBtn"
-          style="margin-top:10px;">
-    Unlock Wallet
-  </button>
-
+<button class="btn" id="unlockBtn">
+Unlock Wallet
+</button>
 </div>
+
 <!-- APP -->
-  <div id="app" style="display:none;">
+<div id="app" style="display:none;">
 
-  <div class="topbar">
-    <h2>K Wallet</h2>
-    <button class="logout" id="logoutBtn">Logout</button>
-  </div>
+<div class="topbar">
+<h2>K Wallet</h2>
+<button class="logout" id="logoutBtn">Logout</button>
+</div>
 
-  <div class="container">
+<div class="container">
 
-    <div class="user-card">
-      <p>Logged in as</p>
-      <strong id="userEmail"></strong>
-      <div class="balance">KSh <span id="balance">0</span></div>
-    </div>
+<div class="user-card">
+<p>Logged in as</p>
+<strong id="userEmail"></strong>
+<div class="balance">KSh <span id="balance">0</span></div>
+</div>
 
-    <div class="grid">
+<div class="grid">
 
-      <div class="card">
-        <h3>➕ Add Money</h3>
-        <input type="number" id="addAmount" placeholder="Amount (KSh)" />
-        <button class="btn" id="addBtn">Add Money</button>
-      </div>
+<!-- Add Money -->
 <div class="card">
-  <h3>💸 Send Money</h3>
-  <input type="email" id="receiverEmail" placeholder="Receiver Email" />
-  <input type="number" id="sendAmount" placeholder="Amount (KSh)" />
-  <button class="btn" id="sendBtn">Send Money</button>
+<h3>➕ Add Money</h3>
+<input type="number" id="addAmount" placeholder="Amount">
+<button class="btn" id="addBtn">Add Money</button>
 </div>
 
+<!-- Send Money -->
+<div class="card">
+<h3>💸 Send Money</h3>
+<input type="email" id="receiverEmail" placeholder="Receiver Email">
+<input type="number" id="sendAmount" placeholder="Amount">
+<button class="btn" id="sendBtn">Send Money</button>
+</div>
+
+</div>
+
+<!-- Transactions -->
 <div class="card" style="margin-top:25px;">
-  <h3>📜 Transaction History</h3>
-  <ul id="txList" class="tx-list"></ul> 
+<h3>📜 Transaction History</h3>
+<ul id="txList" class="tx-list"></ul>
 </div>
 
-<footer>
-      © 2026 K Wallet • Secure Digital Payments 🇰🇪
-    </footer>
-
-  </div>
+</div>
 </div>
 
+<!-- FIREBASE + LOGIC -->
 <script type="module">
-  console.log("🔥 Dashboard loaded");
 
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
- import {
-  getFirestore,
-  doc,
-  getDoc,
-  updateDoc,
-  collection,
-  query,
-  where,
-  orderBy,
-  getDocs,
-  addDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
+import {
+getAuth,onAuthStateChanged,signOut
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+import {
+getFirestore,doc,getDoc,updateDoc,
+collection,query,where,orderBy,
+getDocs,addDoc,serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAN10LcAxOI4UAAmT8529U6WxVMmpfDyy4",
-    authDomain: "k-wallet-8f896.firebaseapp.com",
-    projectId: "k-wallet-8f896",
-  };
+/* Firebase config */
+const firebaseConfig = {
+apiKey:"AIzaSyAN10LcAxOI4UAAmT8529U6WxVMmpfDyy4",
+authDomain: "k-wallet-8f896.firebaseapp.com",
+projectId: "k-wallet-8f896"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-  const loader = document.getElementById("loader");
-  const appUI = document.getElementById("app");
+/* Elements */
+const loader = document.getElementById("loader");
+const appUI = document.getElementById("app");
 
-  const userEmail = document.getElementById("userEmail");
-  const balanceEl = document.getElementById("balance");
+const userEmail = document.getElementById("userEmail");
+const balanceEl = document.getElementById("balance");
 
-  const addAmountInput = document.getElementById("addAmount");
-  const sendAmountInput = document.getElementById("sendAmount");
-  const receiverEmailInput = document.getElementById("receiverEmail");
+const addBtn = document.getElementById("addBtn");
+const sendBtn = document.getElementById("sendBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 
-  const addBtn = document.getElementById("addBtn");
-  const sendBtn = document.getElementById("sendBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
+const pinLock = document.getElementById("pinLock");
+const unlockBtn = document.getElementById("unlockBtn");
 
-  let currentUID = null;
-let authChecked = false;
+let currentUID = null;
 
+/* AUTH */
 onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    if (!authChecked) {
-      authChecked = true;
-      return; // ⏳ wait for Firebase to finish
-    }
-    window.location.replace("login.html");
-    return;
-  }
 
-  // ✅ user confirmed
-  document.body.style.display = "block"; // 👈 SHOW PAGE
-  loader.style.display = "none";
-  appUI.style.display = "block";
+if(!user){
+window.location.replace("login.html");
+return;
+}
 
-  currentUID = user.uid;
-  userEmail.textContent = user.email;
-checkPin();
+document.body.style.display="block";
+loader.style.display="none";
+appUI.style.display="block";
+
+currentUID=user.uid;
+userEmail.textContent=user.email;
+
+await checkPin();
 loadBalance();
 loadTransactions();
 
 });
 
-  
-  async function loadBalance() {
-    const ref = doc(db, "users", currentUID);
-    const snap = await getDoc(ref);
-    if (snap.exists()) {
-      balanceEl.textContent = snap.data().balance || 0;
-    }
-  }
-async function loadTransactions() {
-  const txList = document.getElementById("txList");
-  txList.innerHTML = "<li>Loading...</li>";
-
-  const q = query(
-    collection(db, "transactions"),
-    where("userId", "==", currentUID),
-    orderBy("createdAt", "desc")
-  );
-
-  const snap = await getDocs(q);
-  txList.innerHTML = "";
-
-  if (snap.empty) {
-    txList.innerHTML = "<li>No transactions yet</li>";
-    return;
-  }
-
-  snap.forEach(doc => {
-    const tx = doc.data();
-    const sign = tx.type === "send" ? "−" : "+";
-
-    const li = document.createElement("li");
-    li.style.padding = "10px 0";
-    li.style.borderBottom = "1px solid #eee";
-
-    li.innerHTML = `
-      <strong>${sign} KSh ${tx.amount}</strong><br>
-      <small>${tx.type.toUpperCase()} • ${tx.status}</small>
-    `;
-
-    txList.appendChild(li);
-  });
+/* BALANCE */
+async function loadBalance(){
+const ref=doc(db,"users",currentUID);
+const snap=await getDoc(ref);
+balanceEl.textContent=snap.data().balance||0;
 }
-addBtn.addEventListener("click", async () => {
-  const amount = Number(addAmountInput.value);
-  if (amount <= 0) return alert("Enter a valid amount");
 
-  const ref = doc(db, "users", currentUID);
-  const snap = await getDoc(ref);
+/* ADD MONEY */
+addBtn.onclick=async()=>{
 
-  // 1️⃣ Update balance
-  await updateDoc(ref, {
-    balance: (snap.data().balance || 0) + amount
-  });
+const amount=Number(addAmount.value);
+if(amount<=0)return alert("Invalid amount");
 
-  // 2️⃣ Save transaction
-  await addDoc(collection(db, "transactions"), {
-    type: "receive",
-    amount: amount,
-    from: "self",
-    to: currentUID,
-    status: "success",
-    userId: currentUID,
-    createdAt: serverTimestamp()
-  });
+const ref=doc(db,"users",currentUID);
+const snap=await getDoc(ref);
 
-  addAmountInput.value = "";
-  loadBalance();
-  loadTransactions();
+await updateDoc(ref,{
+balance:(snap.data().balance||0)+amount
 });
 
-
-
-  sendBtn.addEventListener("click", async () => {
-    const amount = Number(sendAmountInput.value);
-    if (amount <= 0) return alert("Invalid amount");
-
-    const senderRef = doc(db, "users", currentUID);
-    const senderSnap = await getDoc(senderRef);
-
-    if (senderSnap.data().balance < amount) {
-      return alert("Insufficient balance");
-    }
-
-    const q = query(
-      collection(db, "users"),
-      where("email", "==", receiverEmailInput.value)
-    );
-
-    const qs = await getDocs(q);
-    if (qs.empty) return alert("Receiver not found");
-
-    const receiverDoc = qs.docs[0];
-
-    await updateDoc(senderRef, {
-      balance: senderSnap.data().balance - amount
-    });
-
-    await updateDoc(doc(db, "users", receiverDoc.id), {
-      balance: receiverDoc.data().balance + amount
-      // Save sender transaction
-await addDoc(collection(db, "transactions"), {
-  type: "send",
-  amount: amount,
-  from: currentUID,
-  to: receiverDoc.id,
-  status: "success",
-  userId: currentUID,
-  createdAt: serverTimestamp()
+await addDoc(collection(db,"transactions"),{
+type:"receive",
+amount,
+userId:currentUID,
+createdAt:serverTimestamp()
 });
 
-// Save receiver transaction
-await addDoc(collection(db, "transactions"), {
-  type: "receive",
-  amount: amount,
-  from: currentUID,
-  to: receiverDoc.id,
-  status: "success",
-  userId: receiverDoc.id,
-  createdAt: serverTimestamp()
+loadBalance();
+loadTransactions();
+};
+
+/* SEND MONEY */
+sendBtn.onclick=async()=>{
+
+const amount=Number(sendAmount.value);
+const email=receiverEmail.value;
+
+const senderRef=doc(db,"users",currentUID);
+const senderSnap=await getDoc(senderRef);
+
+if(senderSnap.data().balance<amount)
+return alert("Insufficient balance");
+
+const q=query(
+collection(db,"users"),
+where("email","==",email)
+);
+
+const qs=await getDocs(q);
+if(qs.empty)return alert("Receiver not found");
+
+const receiverDoc=qs.docs[0];
+
+await updateDoc(senderRef,{
+balance:senderSnap.data().balance-amount
 });
 
-    });
+await updateDoc(
+doc(db,"users",receiverDoc.id),
+{balance:receiverDoc.data().balance+amount}
+);
 
-    sendAmountInput.value = "";
-    receiverEmailInput.value = "";
+/* Transactions */
+await addDoc(collection(db,"transactions"),{
+type:"send",
+amount,
+userId:currentUID,
+createdAt:serverTimestamp()
+});
 
-    alert("Money sent successfully");
-    loadBalance();
-  });
+await addDoc(collection(db,"transactions"),{
+type:"receive",
+amount,
+userId:receiverDoc.id,
+createdAt:serverTimestamp()
+});
 
-  logoutBtn.addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "login.html";
-  });
+loadBalance();
+loadTransactions();
+};
+
+/* HISTORY */
+async function loadTransactions(){
+
+const txList=document.getElementById("txList");
+
+const q=query(
+collection(db,"transactions"),
+where("userId","==",currentUID),
+orderBy("createdAt","desc")
+);
+
+const snap=await getDocs(q);
+
+txList.innerHTML="";
+
+snap.forEach(doc=>{
+const tx=doc.data();
+const sign=tx.type==="send"?"−":"+";
+
+txList.innerHTML+=`
+<li>
+<strong>${sign} KSh ${tx.amount}</strong><br>
+<small>${tx.type}</small>
+</li>`;
+});
+
+}
+
+/* PIN CHECK */
+async function checkPin(){
+
+const ref=doc(db,"users",currentUID);
+const snap=await getDoc(ref);
+
+if(!snap.data().pin){
+
+let newPin=prompt("Create 4-digit PIN");
+
+if(!newPin||newPin.length!==4){
+alert("PIN must be 4 digits");
+return checkPin();
+}
+
+await updateDoc(ref,{pin:newPin});
+alert("PIN created");
+}
+
+pinLock.style.display="flex";
+}
+
+/* UNLOCK */
+unlockBtn.onclick=async()=>{
+
+const ref=doc(db,"users",currentUID);
+const snap=await getDoc(ref);
+
+if(pinInput.value===snap.data().pin){
+pinLock.style.display="none";
+}else{
+alert("Wrong PIN");
+}
+
+};
+
+/* LOGOUT */
+logoutBtn.onclick=async()=>{
+await signOut(auth);
+window.location="login.html";
+};
+
 </script>
-
 </body>
 </html>
