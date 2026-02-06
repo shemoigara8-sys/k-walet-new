@@ -127,8 +127,35 @@
 <!-- LOADER -->
 <div id="loader">Loading dashboard...</div>
 
+  <!-- PIN LOCK SCREEN -->
+<div id="pinLock" style="
+  position:fixed;
+  inset:0;
+  background:#f4f6f8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  z-index:999;
+">
+
+  <h2>K Wallet Security</h2>
+
+  <input type="password"
+         id="pinInput"
+         placeholder="Enter 4-digit PIN"
+         maxlength="4"
+         style="padding:12px; font-size:18px; text-align:center; margin-top:15px;">
+
+  <button class="btn"
+          id="unlockBtn"
+          style="margin-top:10px;">
+    Unlock Wallet
+  </button>
+
+</div>
 <!-- APP -->
-<div id="app" style="display:none;">
+  <div id="app" style="display:none;">
 
   <div class="topbar">
     <h2>K Wallet</h2>
@@ -150,21 +177,19 @@
         <input type="number" id="addAmount" placeholder="Amount (KSh)" />
         <button class="btn" id="addBtn">Add Money</button>
       </div>
-
-      <div class="card">
-        <h3>💸 Send Money</h3>
-        <input type="email" id="receiverEmail" placeholder="Receiver Email" />
-        <input type="number" id="sendAmount" placeholder="Amount (KSh)" />
-        <button class="btn" id="sendBtn">Send Money</button>
-    
-
- <div class="card" style="margin-top:25px;">
-  <h3>📜 Transaction History</h3>
- <ul id="txList" class="tx-list"></ul> 
+<div class="card">
+  <h3>💸 Send Money</h3>
+  <input type="email" id="receiverEmail" placeholder="Receiver Email" />
+  <input type="number" id="sendAmount" placeholder="Amount (KSh)" />
+  <button class="btn" id="sendBtn">Send Money</button>
 </div>
 
+<div class="card" style="margin-top:25px;">
+  <h3>📜 Transaction History</h3>
+  <ul id="txList" class="tx-list"></ul> 
+</div>
 
-    <footer>
+<footer>
       © 2026 K Wallet • Secure Digital Payments 🇰🇪
     </footer>
 
@@ -176,7 +201,7 @@
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import {
+ import {
   getFirestore,
   doc,
   getDoc,
@@ -184,10 +209,12 @@
   collection,
   query,
   where,
+  orderBy,
   getDocs,
   addDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 
 
   const firebaseConfig = {
@@ -234,9 +261,10 @@ onAuthStateChanged(auth, async (user) => {
 
   currentUID = user.uid;
   userEmail.textContent = user.email;
+checkPin();
+loadBalance();
+loadTransactions();
 
-  loadBalance();
-  loadTransactions();
 });
 
   
@@ -338,6 +366,28 @@ addBtn.addEventListener("click", async () => {
 
     await updateDoc(doc(db, "users", receiverDoc.id), {
       balance: receiverDoc.data().balance + amount
+      // Save sender transaction
+await addDoc(collection(db, "transactions"), {
+  type: "send",
+  amount: amount,
+  from: currentUID,
+  to: receiverDoc.id,
+  status: "success",
+  userId: currentUID,
+  createdAt: serverTimestamp()
+});
+
+// Save receiver transaction
+await addDoc(collection(db, "transactions"), {
+  type: "receive",
+  amount: amount,
+  from: currentUID,
+  to: receiverDoc.id,
+  status: "success",
+  userId: receiverDoc.id,
+  createdAt: serverTimestamp()
+});
+
     });
 
     sendAmountInput.value = "";
